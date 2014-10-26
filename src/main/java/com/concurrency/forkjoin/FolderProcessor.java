@@ -10,9 +10,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * This is a demo class for ForkJoinPool taken from this tutorial
  * http://howtodoinjava.com/2014/05/27/forkjoin-framework-tutorial-forkjoinpool-example/
- *
+ * <p/>
  * I slightly modified it.
- *
+ * <p/>
  * By paoloibarra on 20/10/14.
  */
 public class FolderProcessor extends RecursiveTask<List<String>> {
@@ -32,14 +32,14 @@ public class FolderProcessor extends RecursiveTask<List<String>> {
         //For each element in the folder, if there is a subfolder, create a new FolderProcessor object 
         //and execute it asynchronously using the fork() method.
         if (allFile != null) {
-            for (File content: allFile) {
+            for (File content : allFile) {
                 if (content.isDirectory()) {
                     FolderProcessor task = new FolderProcessor(content.getAbsolutePath(), extension);
                     task.fork();
                     tasks.add(task);
                 } else if (checkFile(content.getName())) {
-                        list.add(content.getAbsolutePath());
-                    }
+                    list.add(content.getAbsolutePath());
+                }
 
             }
         }
@@ -59,8 +59,7 @@ public class FolderProcessor extends RecursiveTask<List<String>> {
         this.extension = extension;
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         //Create ForkJoinPool using the default constructor.
         ForkJoinPool pool = new ForkJoinPool();
         //Create three FolderProcessor tasks. Initialize each one with a different folder path.
@@ -73,19 +72,16 @@ public class FolderProcessor extends RecursiveTask<List<String>> {
         pool.execute(rubyFiles);
         //Write to the console information about the status of the pool every second
         //until the three tasks have finished their execution.
-        do
-        {
+        do {
             System.out.printf("******************************************\n");
             System.out.printf("Main: Parallelism: %d\n", pool.getParallelism());
             System.out.printf("Main: Active Threads: %d\n", pool.getActiveThreadCount());
             System.out.printf("Main: Task Count: %d\n", pool.getQueuedTaskCount());
             System.out.printf("Main: Steal Count: %d\n", pool.getStealCount());
             System.out.printf("******************************************\n");
-            try
-            {
+            try {
                 TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         } while ((!logFiles.isDone()) || (!markdownFiles.isDone()) || (!rubyFiles.isDone()));
